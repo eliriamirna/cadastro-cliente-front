@@ -1,0 +1,2 @@
+# cadastro-clientes-front
+Interface em React de para a api de cadastro de clientes. Esse projeto é composto de um formulário e uma tabela com as informações dos cliente com opções de criar, editar e deletar. Também tem integração com ViaCep para busca de endereço pelo cep digitado.
