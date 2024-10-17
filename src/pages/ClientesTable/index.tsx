@@ -21,9 +21,6 @@ export const ClientesTable = () => {
   const [editRow, setEditRow] = useState<number | null>(null);
   const [formData, setFormData] = useState<Partial<Cliente>>({});
   const [availableCities, setAvailableCities] = useState<Option[]>(cidades);
-  const [cityOptions, setCityOptions] = useState<{ value: string, label: string }[]>([]);
-  const [cepError, setCepError] = useState<string | null>(null);
-  const [loadingCep, setLoadingCep] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,9 +40,6 @@ export const ClientesTable = () => {
                 }
             }
         }));
-
-        const cities = data.map((cliente: Cliente) => ({ value: cliente.city, label: cliente.city }));
-        setCityOptions(cities);
       } catch (error) {
         console.error('Erro ao buscar clientes:', error);
       }
@@ -59,9 +53,6 @@ export const ClientesTable = () => {
     setFormData((prev) => ({ ...prev, cep: value }));
 
     if (value.length === 8) {
-      setLoadingCep(true);
-      setCepError(null);
-
       try {
         const data = await fetchCepData(value);
         if (data) {
@@ -86,14 +77,9 @@ export const ClientesTable = () => {
                 city: cityOption,
             }
           })
-        } else {
-          setCepError('CEP não encontrado');
         }
       } catch (error) {
         console.error('Erro ao buscar CEP:', error);
-        setCepError('Erro ao buscar CEP');
-      } finally {
-        setLoadingCep(false);
       }
     }
   };
