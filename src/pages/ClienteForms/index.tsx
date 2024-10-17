@@ -3,12 +3,12 @@ import { useDropzone } from 'react-dropzone';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import { fetchCepData } from '../../utils/viacep';
-import { useParams } from 'react-router-dom'; 
+import { useParams, useNavigate  } from 'react-router-dom'; 
 import { customFetch } from '../../utils/api';
 import ReactSelect from 'react-select';
 import { cidades } from '../../utils/cidades';
 
-interface Option {
+export interface Option {
     value: string;
     label: string;
 }
@@ -22,7 +22,8 @@ interface FormData {
 }
 
 export function ClienteForm() {
-  const { codigo } = useParams();
+  const { code } = useParams();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     cep: '',
@@ -86,9 +87,9 @@ export function ClienteForm() {
   };
 
   useEffect(() => {
-    const fetchClienteData = async (codigo: string) => {
+    const fetchClienteData = async (code: string) => {
       try {
-        const response = await customFetch(`http://localhost:5000/clientes/${codigo}`);
+        const response = await customFetch(`http://localhost:5000/clientes/${code}`);
         if (response.ok) {
           const data = await response.json();
           
@@ -111,15 +112,70 @@ export function ClienteForm() {
       }
     };
   
-    if (codigo) {
-      fetchClienteData(codigo); 
+    if (code) {
+      fetchClienteData(code); 
     }
-  }, [codigo]);
+  }, [code]);
+
+  const handleUpsertFieldData = async () => {
+    try {
+      const clientData = {
+        nome: formData.name || '',
+        cep: formData.cep || '',
+        endereco: formData.address || '',
+        cidade: formData.city?.value || '',
+      };
+
+      const url = code
+        ? `http://localhost:5000/clientes/${code}` 
+        : 'http://localhost:5000/clientes'; 
+
+      const method = code ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(clientData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao salvar cliente');
+      }
+
+      const savedClient = await response.json();
+
+      if (code) {
+        alert('Cliente atualizado com sucesso!');
+      } else {
+        alert('Cliente criado com sucesso!');
+      }
+
+      if (file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('codigo', savedClient.codigo); 
+
+        const uploadResponse = await fetch('http://localhost:5000/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error('Erro ao fazer upload do arquivo');
+        }
+      }
+
+    navigate('/clientes-table'); 
+    } catch (error) {
+      console.error('Erro:', error);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form data:', formData);
-    console.log('Arquivo anexado:', file);
+    handleUpsertFieldData();
   };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -139,7 +195,7 @@ export function ClienteForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#8bcffa] p-4">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-        <h1 className="text-2xl font-bold mb-6 text-center text-[#0c0c0c]">Cadastro de Clientes</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center text-[#0c0c0c]">Cadastro de Cliente</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             label="Nome"
@@ -147,7 +203,6 @@ export function ClienteForm() {
             value={formData.name}
             onChange={handleChange}
             placeholder="Digite seu nome"
-            required
           />
           <Input
             label="CEP"
@@ -155,7 +210,6 @@ export function ClienteForm() {
             value={formData.cep}
             onChange={handleCepChange}
             placeholder="Digite seu CEP"
-            required
             loading={loadingCep}
             error={cepError}
           />
@@ -165,7 +219,6 @@ export function ClienteForm() {
             value={formData.address}
             onChange={handleChange}
             placeholder="Digite seu endereço"
-            required
           />
           <ReactSelect
             name="city"
@@ -179,7 +232,6 @@ export function ClienteForm() {
             options={availableCities || []}
             isClearable
             placeholder="Selecione uma cidade"
-            required
           />
 
             <div
@@ -195,7 +247,7 @@ export function ClienteForm() {
                 {file && <p className="mt-2 text-green-600">{file.name}</p>}
             </div>
 
-            {codigo && (
+            {code && (
                 <p className="mt-2 text-green-600">Arquivo(PDF): {formData.fileName}</p>
             )}
            
