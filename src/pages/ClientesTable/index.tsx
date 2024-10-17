@@ -6,6 +6,7 @@ import Input from '../../components/Input';
 import { Option } from '../ClienteForms';
 import { cidades } from '../../utils/cidades';
 import { fetchCepData } from '../../utils/viacep';
+import { customFetch } from '../../utils/api';
 
 interface Cliente {
     code: number;
@@ -28,7 +29,7 @@ export const ClientesTable = () => {
   useEffect(() => {
     const fetchClientes = async () => {
       try {
-        const response = await fetch('http://localhost:5000/clientes');
+        const response = await customFetch('/clientes');
         const data = await response.json();
         setClientes(data.map((cliente: any) => {
             return {
@@ -104,7 +105,7 @@ export const ClientesTable = () => {
   const handleDelete = async (code: number) => {
     if (window.confirm('Tem certeza que deseja excluir este cliente?')) {
       try {
-        const response = await fetch(`http://localhost:5000/clientes/${code}`, {
+        const response = await customFetch(`/clientes/${code}`, {
           method: 'DELETE',
         });
 
@@ -126,7 +127,7 @@ export const ClientesTable = () => {
 
   const handleSave = async (code: number) => {
     try {
-      const response = await fetch(`http://localhost:5000/clientes/${code}`, {
+      const response = await customFetch(`/clientes/${code}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

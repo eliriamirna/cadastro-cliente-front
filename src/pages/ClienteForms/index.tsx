@@ -89,7 +89,7 @@ export function ClienteForm() {
   useEffect(() => {
     const fetchClienteData = async (code: string) => {
       try {
-        const response = await customFetch(`http://localhost:5000/clientes/${code}`);
+        const response = await customFetch(`/clientes/${code}`);
         if (response.ok) {
           const data = await response.json();
           
@@ -127,12 +127,12 @@ export function ClienteForm() {
       };
 
       const url = code
-        ? `http://localhost:5000/clientes/${code}` 
-        : 'http://localhost:5000/clientes'; 
+        ? `/clientes/${code}` 
+        : '/clientes'; 
 
       const method = code ? 'PUT' : 'POST';
 
-      const response = await fetch(url, {
+      const response = await customFetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -157,7 +157,7 @@ export function ClienteForm() {
         formData.append('file', file);
         formData.append('codigo', savedClient.codigo); 
 
-        const uploadResponse = await fetch('http://localhost:5000/upload', {
+        const uploadResponse = await customFetch('/upload', {
           method: 'POST',
           body: formData,
         });
