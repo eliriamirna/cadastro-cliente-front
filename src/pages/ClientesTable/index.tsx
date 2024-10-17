@@ -271,14 +271,12 @@ export const ClientesTable = () => {
                           bgColor="bg-blue-400"
                           textColor="text-white"
                           onClick={() => handleSave(cliente.code)}
-                          width='w-18'
                         />
                         <Button
                           text="Cancelar"
                           bgColor="bg-red-500"
                           textColor="text-white"
                           onClick={handleCancel}
-                          width='w-18'
                         />
                       </div>
                     ) : (
