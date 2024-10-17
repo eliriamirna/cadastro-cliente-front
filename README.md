@@ -54,7 +54,7 @@ Este projeto é uma aplicação de cadastro básico de clientes, desenvolvida co
 3. Inicie o servidor de desenvolvimento:
 
 ```bash
-    npm install
+    npm start
 ```
 
 4. Acesse a aplicação no navegador:
