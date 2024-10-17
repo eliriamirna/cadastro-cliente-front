@@ -14,7 +14,7 @@ const Button: React.FC<ButtonProps> = ({ text, bgColor, textColor, width, onClic
     <button
       type={type}
       onClick={onClick}
-      className={`w-full py-2 rounded-md transition-colors ${bgColor} ${textColor} ${width} hover:opacity-80`}
+      className={`${width ? width : 'w-full'} py-2 rounded-md transition-colors ${bgColor} ${textColor} hover:opacity-80`}
     >
       {text}
     </button>

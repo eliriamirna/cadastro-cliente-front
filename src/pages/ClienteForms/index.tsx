@@ -167,7 +167,7 @@ export function ClienteForm() {
         }
       }
 
-    navigate('/clientes-table'); 
+    navigate('/'); 
     } catch (error) {
       console.error('Erro:', error);
     }
@@ -203,6 +203,7 @@ export function ClienteForm() {
             value={formData.name}
             onChange={handleChange}
             placeholder="Digite seu nome"
+            required
           />
           <Input
             label="CEP"
