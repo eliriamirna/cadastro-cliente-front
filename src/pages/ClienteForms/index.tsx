@@ -160,7 +160,7 @@ export function ClienteForm() {
         const uploadResponse = await customFetch('/upload', {
           method: 'POST',
           body: formData,
-        });
+        }, false);
 
         if (!uploadResponse.ok) {
           throw new Error('Erro ao fazer upload do arquivo');
